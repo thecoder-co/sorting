@@ -32,36 +32,28 @@ class Window:
                            x1, y1]
             return self.c.create_polygon(points, **kwargs, smooth=True)
 
-        def generate_colors(n):
-            rgb_values = [] 
-            hex_values = [] 
-            r = int(random.random() * 256) 
-            g = int(random.random() * 256) 
-            b = int(random.random() * 256) 
-            step = 256 / n 
-            for _ in range(n): 
-                r += step 
-                g += step 
-                b += step 
-                r = int(r) % 256 
-                g = int(g) % 256 
-                b = int(b) % 256 
-                r_hex = hex(r)[2:] 
-                g_hex = hex(g)[2:] 
-                b_hex = hex(b)[2:] 
-                hex_values.append('#' + r_hex + g_hex + b_hex) 
-                rgb_values.append((r,g,b)) 
+        def generate_colors():
+            rgb_values = []
+            rgb = (255, 0, 0)
+            for i in range (21):
+                rgb_values.append(rgb)
+                rgb = 255, round(rgb[1] + 12.142857143), 0
+            for i in range (21):
+                rgb_values.append(rgb)
+                rgb = round(rgb[0] - 12.142857143), 255, 0
             return rgb_values
 
         self.c = Canvas(width=940, height=650, bg='white')
 
 
-        colors = generate_colors(42)
-        print(colors)
+        colors = generate_colors()
         x_counter = 10
         sticks = {}
+
+        # creates a dictionary of shapes in sticks
         for i in range(41):
-            sticks[i] = [round_rect(x_counter, 400, x_counter+20, 600, radius=10, fill=from_rgb(colors[i]))]
+            sticks[i] = [round_rect(x_counter, 400, x_counter+20, 600, radius=10,
+                                    fill=from_rgb(colors[i])), x_counter, 400, x_counter+20, 600, i]
             x_counter += 22.5
 
         def info(event):
@@ -93,19 +85,23 @@ class Window:
             Button(self.toplevel, text="close",
                 command=self.toplevel.withdraw).pack(pady=30)
 
+
+        # this is the code that is not working, it's probably because i wrote it wrong
+        # help me correct it
+        # the code is supposed to pick two random sticks and exchange their place
         def rd(event):
             """
             docstring
             """
-            self.toplevel = Toplevel(bg='white')
-            self.toplevel.transient()
-            self.frame = Frame(self.toplevel, width=400, height=300)
-            self.toplevel.title("sorting")
-            Label(self.toplevel, text='bubble sort', bg='white', fg='black').pack(pady=20)
-            Label(self.toplevel, text="randomizing",
-                bg='white', fg='black').pack()
-            Button(self.toplevel, text="close",
-                command=self.toplevel.withdraw).pack(pady=30)
+            for i in range(100):
+                rd1 = random.randint(0, 41)
+                rd2 = random.randint(0, 41)
+                item1 = sticks[rd1]
+                item2 = sticks[rd2]
+                self.c.moveto(sticks[rd1][0], sticks[rd1][1], sticks[rd1][2])
+                self.c.moveto(sticks[rd2][0], sticks[rd2][1], sticks[rd2][2])
+                sticks[rd1][1], sticks[rd1][2] = item2[1], item2[2]
+                sticks[rd2][1], sticks[rd2][2] = item1[1], item1[2]
 
         def infoenter(event):
             self.c.itemconfig(infoBtn, fill='grey50')
