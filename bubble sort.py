@@ -1,16 +1,16 @@
 from tkinter import *
-
+import random
 class Window:
     def __init__(self, master):
 
-        def from_rgb(r, g, b):
-            return "#%02x%02x%02x" % (r, g, b)
+        def from_rgb(tup):
+            return "#%02x%02x%02x" % (tup[0], tup[1], tup[2])
 
         def quit(event):
             sys.exit()
 
         def round_rect(x1, y1, x2, y2, radius=25, **kwargs):
-            self.points = [x1+radius, y1,
+            points = [x1+radius, y1,
                            x1+radius, y1,
                            x2-radius, y1,
                            x2-radius, y1,
@@ -30,9 +30,39 @@ class Window:
                            x1, y1+radius,
                            x1, y1+radius,
                            x1, y1]
-            return self.c.create_polygon(self.points, **kwargs, smooth=True)
+            return self.c.create_polygon(points, **kwargs, smooth=True)
+
+        def generate_colors(n):
+            rgb_values = [] 
+            hex_values = [] 
+            r = int(random.random() * 256) 
+            g = int(random.random() * 256) 
+            b = int(random.random() * 256) 
+            step = 256 / n 
+            for _ in range(n): 
+                r += step 
+                g += step 
+                b += step 
+                r = int(r) % 256 
+                g = int(g) % 256 
+                b = int(b) % 256 
+                r_hex = hex(r)[2:] 
+                g_hex = hex(g)[2:] 
+                b_hex = hex(b)[2:] 
+                hex_values.append('#' + r_hex + g_hex + b_hex) 
+                rgb_values.append((r,g,b)) 
+            return rgb_values
 
         self.c = Canvas(width=940, height=650, bg='white')
+
+
+        colors = generate_colors(42)
+        print(colors)
+        x_counter = 10
+        sticks = {}
+        for i in range(41):
+            sticks[i] = [round_rect(x_counter, 400, x_counter+20, 600, radius=10, fill=from_rgb(colors[i]))]
+            x_counter += 22.5
 
         def info(event):
             self.toplevel = Toplevel(bg='white')
