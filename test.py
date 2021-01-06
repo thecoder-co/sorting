@@ -13,15 +13,12 @@ def swap_two_pos(pos_0, pos_1):
     canvas.move(pos_1, x_01-x_11, 0)
 
 def sort_two(pos_0, pos_1):
-    x_00, _y1, x_01, _ = canvas.coords(pos_0)
-    x_10, _y2, x_11, _ = canvas.coords(pos_1)
-    y1 = pos_0[1]
-    y2 = pos_1[1]
-    print(y1,y2)
+    x_00, y1, x_01, _ = canvas.coords(pos_0)
+    x_10, y2, x_11, _ = canvas.coords(pos_1)
     # moves each rectangle to the x position of the other; y remains unchanged
     if y2 > y1:
-        canvas.move(pos_0[0], x_10-x_00, 0)
-        canvas.move(pos_1[0], x_01-x_11, 0)
+        canvas.move(pos_0, x_10-x_00, 0)
+        canvas.move(pos_1, x_01-x_11, 0)
 
 def rand_sort():
     for i in range(50000):
@@ -61,7 +58,6 @@ def random_swap():
         # it is necessary to swap the values in the list too
         barList[rd1], barList[rd2] = barList[rd2], barList[rd1]
 
-
 window = tk.Tk()
 window.title('Sorting')
 window.geometry('600x400')
@@ -80,21 +76,14 @@ Y = 5
 
 for x in range(1,60):
     bar = canvas.create_rectangle(xstart, Y, xend, 395, fill='red')
-    barList.append([bar, x])
+    barList.append(bar)
     xstart += 10
     xend += 10
     Y += 5
 
 for bar in barList:
-    x = canvas.coords(bar[0])
+    x = canvas.coords(bar)
     length = x[3]-x[1]
     lengthList.append(length)
-
-
-print(barList)
-
-# hardcoded colors so the swap is more visual
-canvas.itemconfig(barList[10], fill='blue')
-canvas.itemconfig(barList[20], fill='yellow')
 
 window.mainloop()
